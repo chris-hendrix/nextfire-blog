@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useCallback, useContext } from 'react'
 import debounce from 'lodash.debounce'
 import Image from 'next/image'
@@ -78,11 +79,7 @@ function UsernameForm() {
     }
   }
 
-  //
-
-  useEffect(() => {
-    checkUsername(formValue)
-  }, [formValue])
+  useEffect(() => { checkUsername(formValue) }, [formValue])
 
   // Hit the database for username match after each debounced change
   // useCallback is required for debounce to work
@@ -90,7 +87,7 @@ function UsernameForm() {
     debounce(async (username) => {
       if (username.length >= 3) {
         const ref = doc(firestore, `usernames/${username}`)
-        const { exists } = await getDoc(ref)
+        const exists = (await getDoc(ref)).exists()
         console.log('Firestore read executed!')
         setIsValid(!exists)
         setLoading(false)
