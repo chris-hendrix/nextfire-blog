@@ -1,7 +1,16 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import {
+  getFirestore,
+  collection,
+  DocumentData,
+  DocumentReference,
+  query, where, getDocs,
+  limit,
+  Timestamp
+} from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
+import { parsePost } from './parse'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDGKFefmMIJvb4cscMpTm_s_digAwkMiQQ',
@@ -19,3 +28,46 @@ export const firestore = getFirestore(firebaseApp)
 export const storage = getStorage(firebaseApp)
 export const signIn = () => signInWithPopup(auth, new GoogleAuthProvider())
 export const signOut = () => auth.signOut()
+
+
+/**`
+ * Gets a users/{uid} document with username
+ * @param  {string} username
+ */
+export async function getUserDocByUsername(username: string) {
+  const usersRef = collection(firestore, 'users')
+  const usersQuery = query(usersRef, where('username', '==', username), limit(1))
+  const userDoc = (await getDocs(usersQuery)).docs[0]
+  return userDoc
+}
+
+/**`
+ * Gets a users/{uid} document with username
+ * @param  {string} username
+ */
+export async function getPostDocBySlug(userRef: DocumentReference, slug: string) {
+  const postsRef = collection(userRef, 'posts')
+  const postsQuery = query(postsRef, where('slug', '==', slug), limit(1))
+  const postDoc = (await getDocs(postsQuery)).docs[0]
+  return postDoc
+}
+
+/**`
+ * Converts a firestore document to JSON
+ * @param  {DocumentSnapshot} doc
+ */
+export function postToJSON(doc: DocumentData) {
+  const data = doc.data()
+  return parsePost({
+    ...data,
+    // Gotcha! firestore timestamp NOT serializable to JSON. Must convert to milliseconds
+    createdAt: data.createdAt.toMillis(),
+    updatedAt: data.updatedAt.toMillis(),
+  })
+}
+
+export const fromMillis = Timestamp.fromMillis
+
+export const getParam = (key: string, params?: any): string => {
+  return params && Object.keys(params).includes(key) ? params[key] : null
+}

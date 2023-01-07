@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useCallback, useContext } from 'react'
 import debounce from 'lodash.debounce'
-import Image from 'next/image'
 import { doc, writeBatch, getDoc } from 'firebase/firestore'
 import { firestore } from '../lib/firebase'
 import { signIn, signOut } from '../lib/firebase'
@@ -26,7 +25,7 @@ export default function Enter() {
 function SignInButton() {
   return (
     <button className="btn-google" onClick={async () => await signIn()}>
-      <Image alt={'google.png'} width={25} height={30} src={'/google.png'} />
+      <img alt={'google.png'} width={25} height={30} src={'/google.png'} />
       Sign in with Google
     </button>
   )
