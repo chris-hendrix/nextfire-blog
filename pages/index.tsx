@@ -4,6 +4,7 @@ import { collectionGroup, query, where, getDocs, limit, orderBy, startAfter } fr
 import { Post } from '../lib/types'
 import { postToJSON, firestore, fromMillis } from '../lib/firebase'
 
+import Metatags from '../components/Metatags'
 import PostFeed from '../components/PostFeed'
 import Loader from '../components/Loader'
 
@@ -59,6 +60,7 @@ export default function Home({ topPosts }: Props) {
 
   return (
     <main>
+      <Metatags />
       <PostFeed posts={posts} />
 
       {!loading && !postsEnd && <button onClick={getMorePosts}>Load more</button>}
