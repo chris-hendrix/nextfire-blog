@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { collection, query, where, getDocs, limit, orderBy } from 'firebase/firestore'
-import { getUserWithUsername, postToJSON, firestore } from '../../lib/firebase'
+import { getUserDocByUsername, postToJSON, firestore } from '../../lib/firebase'
 import { User, Post } from '../../lib/types'
 import UserProfile from '../../components/UserProfile'
 import PostFeed from '../../components/PostFeed'
@@ -8,7 +8,7 @@ import PostFeed from '../../components/PostFeed'
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { username } = context.query
 
-  const userDoc = typeof username === 'string' && await getUserWithUsername(username)
+  const userDoc = typeof username === 'string' && await getUserDocByUsername(username)
 
   // JSON serializable data
   let user = null

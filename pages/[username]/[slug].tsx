@@ -1,28 +1,30 @@
-import styles from '../../styles/Post.module.css'
+import styles from '../../styles/PostPage.module.css'
 import { GetStaticProps, GetStaticPaths } from 'next'
-import { collection, doc, getDocs, getDoc, collectionGroup } from 'firebase/firestore'
-import { firestore, getUserWithUsername, postToJSON } from '../../lib/firebase'
+import { useDocument } from 'react-firebase-hooks/firestore'
+import { doc, getDocs, collectionGroup } from 'firebase/firestore'
+import { firestore, getUserDocByUsername, getPostDocBySlug, postToJSON } from '../../lib/firebase'
 import { Post } from '../../lib/types'
 import { getParam } from '../../lib/firebase'
+import PostContent from '../../components/PostContent'
+// import { parsePost } from '../../lib/parse'
 
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const username = getParam('username', params)
   const slug = getParam('slug', params)
-  const userDoc = await getUserWithUsername(username)
+  const userDoc = await getUserDocByUsername(username)
+  const postDoc = userDoc && await getPostDocBySlug(userDoc.ref, slug)
 
-  let post = null
+  let serverPost = null
   let path = null
 
-  if (userDoc) {
-    const postRef = doc(collection(userDoc.ref, 'posts'), slug)
-    post = postToJSON(await getDoc(postRef))
-
-    path = postRef.path
+  if (postDoc) {
+    serverPost = postToJSON(postDoc)
+    path = postDoc.ref.path
   }
 
   return {
-    props: { post, path },
+    props: { serverPost, path },
     revalidate: 5000,
   }
 }
@@ -48,11 +50,27 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export default function Post() {
+type Props = { path: string, serverPost: Post }
+
+export default function PostPage({ path, serverPost }: Props) {
+  const postRef = doc(firestore, path)
+  const [realtimePostDoc] = useDocument(postRef)
+  const realtimePost = realtimePostDoc && postToJSON(realtimePostDoc)
+  const post = realtimePost || serverPost
 
   return (
     <main className={styles.container}>
 
+      <section>
+        <PostContent post={post} />
+      </section>
+
+      <aside className="card">
+        <p>
+          <strong>{post.heartCount || 0} 🤍</strong>
+        </p>
+
+      </aside>
     </main>
   )
 }

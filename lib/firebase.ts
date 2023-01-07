@@ -1,6 +1,14 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
-import { getFirestore, collection, DocumentData, query, where, getDocs, limit, Timestamp } from 'firebase/firestore'
+import {
+  getFirestore,
+  collection,
+  DocumentData,
+  DocumentReference,
+  query, where, getDocs,
+  limit,
+  Timestamp
+} from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 import { parsePost } from './parse'
 
@@ -26,11 +34,22 @@ export const signOut = () => auth.signOut()
  * Gets a users/{uid} document with username
  * @param  {string} username
  */
-export async function getUserWithUsername(username: string) {
+export async function getUserDocByUsername(username: string) {
   const usersRef = collection(firestore, 'users')
-  const q = query(usersRef, where('username', '==', username), limit(1))
-  const userDoc = (await getDocs(q)).docs[0]
+  const usersQuery = query(usersRef, where('username', '==', username), limit(1))
+  const userDoc = (await getDocs(usersQuery)).docs[0]
   return userDoc
+}
+
+/**`
+ * Gets a users/{uid} document with username
+ * @param  {string} username
+ */
+export async function getPostDocBySlug(userRef: DocumentReference, slug: string) {
+  const postsRef = collection(userRef, 'posts')
+  const postsQuery = query(postsRef, where('slug', '==', slug), limit(1))
+  const postDoc = (await getDocs(postsQuery)).docs[0]
+  return postDoc
 }
 
 /**`
