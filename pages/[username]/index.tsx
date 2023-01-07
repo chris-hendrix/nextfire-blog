@@ -10,6 +10,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const userDoc = typeof username === 'string' && await getUserDocByUsername(username)
 
+  if (!userDoc) return { notFound: true }
+
   // JSON serializable data
   let user = null
   let posts = null
