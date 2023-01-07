@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
-import { getFirestore, collection, DocumentData, query, where, getDocs, limit } from 'firebase/firestore'
+import { getFirestore, collection, DocumentData, query, where, getDocs, limit, Timestamp } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
@@ -45,3 +45,5 @@ export function postToJSON(doc: DocumentData) {
     updatedAt: data.updatedAt.toMillis(),
   }
 }
+
+export const fromMillis = Timestamp.fromMillis
