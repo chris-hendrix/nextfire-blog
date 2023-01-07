@@ -3,7 +3,6 @@ import { GetServerSideProps } from 'next'
 import { collectionGroup, query, where, getDocs, limit, orderBy, startAfter } from 'firebase/firestore'
 import { Post } from '../lib/types'
 import { postToJSON, firestore, fromMillis } from '../lib/firebase'
-import { parsePost } from '../lib/parse'
 
 import PostFeed from '../components/PostFeed'
 import Loader from '../components/Loader'
@@ -19,7 +18,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     limit(LIMIT)
   )
 
-  const topPosts = (await getDocs(postsQuery)).docs.map(doc => parsePost(postToJSON(doc)))
+  const topPosts = (await getDocs(postsQuery)).docs.map(doc => postToJSON(doc))
 
   return {
     props: { topPosts }, // will be passed to the page component as props
@@ -48,7 +47,7 @@ export default function Home({ topPosts }: Props) {
       limit(LIMIT)
     )
 
-    const newPosts = (await getDocs(postsQuery)).docs.map((doc) => parsePost(doc.data()))
+    const newPosts = (await getDocs(postsQuery)).docs.map((doc) => postToJSON(doc))
 
     setPosts(posts.concat(newPosts))
     setLoading(false)

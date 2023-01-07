@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app'
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { getFirestore, collection, DocumentData, query, where, getDocs, limit, Timestamp } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
+import { parsePost } from './parse'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDGKFefmMIJvb4cscMpTm_s_digAwkMiQQ',
@@ -38,12 +39,16 @@ export async function getUserWithUsername(username: string) {
  */
 export function postToJSON(doc: DocumentData) {
   const data = doc.data()
-  return {
+  return parsePost({
     ...data,
     // Gotcha! firestore timestamp NOT serializable to JSON. Must convert to milliseconds
     createdAt: data.createdAt.toMillis(),
     updatedAt: data.updatedAt.toMillis(),
-  }
+  })
 }
 
 export const fromMillis = Timestamp.fromMillis
+
+export const getParam = (key: string, params?: any): string => {
+  return params && Object.keys(params).includes(key) ? params[key] : null
+}
