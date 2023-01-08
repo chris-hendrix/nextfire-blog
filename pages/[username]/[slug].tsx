@@ -6,7 +6,6 @@ import { firestore, getUserDocByUsername, getPostDocBySlug, postToJSON } from '.
 import { Post } from '../../lib/types'
 import { getParam } from '../../lib/firebase'
 import PostContent from '../../components/PostContent'
-// import { parsePost } from '../../lib/parse'
 
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
