@@ -5,7 +5,9 @@ import {
   collection,
   DocumentData,
   DocumentReference,
-  query, where, getDocs,
+  query,
+  where,
+  getDocs,
   limit,
   Timestamp
 } from 'firebase/firestore'
@@ -61,8 +63,8 @@ export function postToJSON(doc: DocumentData) {
   return parsePost({
     ...data,
     // Gotcha! firestore timestamp NOT serializable to JSON. Must convert to milliseconds
-    createdAt: data.createdAt.toMillis(),
-    updatedAt: data.updatedAt.toMillis(),
+    createdAt: data.createdAt?.toMillis() || data.createdAt,
+    updatedAt: data.updatedAt?.toMillis() || data.createdAt,
   })
 }
 
