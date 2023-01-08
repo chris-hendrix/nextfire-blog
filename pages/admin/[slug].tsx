@@ -4,6 +4,7 @@ import { firestore, auth, getPostDocBySlug, postToJSON } from '../../lib/firebas
 import { doc, serverTimestamp, updateDoc } from 'firebase/firestore'
 import { Post } from '../../lib/types'
 import { QueryDocumentSnapshot, DocumentReference } from 'firebase/firestore'
+import ImageUploader from '../../components/ImageUploader'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -99,6 +100,8 @@ function PostForm({ defaultValues, postRef, preview }: Props) {
       )}
 
       <div className={preview ? styles.hidden : styles.controls}>
+
+        <ImageUploader />
 
         <textarea {...register('content', {
           maxLength: { value: 20000, message: 'content is too long' },

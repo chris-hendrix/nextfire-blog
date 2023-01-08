@@ -73,3 +73,5 @@ export const fromMillis = Timestamp.fromMillis
 export const getParam = (key: string, params?: any): string => {
   return params && Object.keys(params).includes(key) ? params[key] : null
 }
+
+export const STATE_CHANGED = 'state_changed'
