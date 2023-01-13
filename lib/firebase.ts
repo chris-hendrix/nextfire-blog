@@ -55,6 +55,17 @@ export async function getPostDocBySlug(userRef: DocumentReference, slug: string)
 }
 
 /**`
+ * Gets a users/{uid} document with username
+ * @param  {string} username
+ */
+export async function getPostHeartDocByUid(uid: string, postRef: DocumentReference) {
+  const heartsRef = collection(postRef, 'hearts')
+  const heartQuery = query(heartsRef, where('uid', '==', uid), limit(1))
+  const heartDoc = (await getDocs(heartQuery)).docs[0]
+  return heartDoc
+}
+
+/**`
  * Converts a firestore document to JSON
  * @param  {DocumentSnapshot} doc
  */

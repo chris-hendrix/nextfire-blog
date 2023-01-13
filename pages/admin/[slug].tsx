@@ -26,8 +26,6 @@ function PostManager() {
   const [preview, setPreview] = useState(false)
   const [postDoc, setPostDoc] = useState<QueryDocumentSnapshot | null>(null)
 
-  console.log({ postDoc })
-
   const router = useRouter()
   const slug = String(router.query.slug)
 
