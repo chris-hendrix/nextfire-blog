@@ -6,6 +6,9 @@ import { firestore, getUserDocByUsername, getPostDocBySlug, postToJSON } from '.
 import { Post } from '../../lib/types'
 import { getParam } from '../../lib/firebase'
 import PostContent from '../../components/PostContent'
+import HeartButton from '../../components/HeartButton'
+import AuthCheck from '../../components/AuthCheck'
+import Link from 'next/link'
 
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
@@ -68,8 +71,17 @@ export default function PostPage({ path, serverPost }: Props) {
         <p>
           <strong>{post.heartCount || 0} 🤍</strong>
         </p>
-
+        <AuthCheck
+          fallback={
+            <Link href="/enter">
+              <button>💗 Sign Up</button>
+            </Link>
+          }
+        >
+          <HeartButton postRef={postRef} />
+        </AuthCheck>
       </aside>
+
     </main>
   )
 }
